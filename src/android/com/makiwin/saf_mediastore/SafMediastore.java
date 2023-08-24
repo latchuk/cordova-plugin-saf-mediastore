@@ -153,7 +153,7 @@ public class SafMediastore extends CordovaPlugin implements ValueCallback<String
 	}
 
 	public boolean test(JSONArray args, CallbackContext callbackContext) {
-		callbackContext.success("OK!");
+		callbackContext.success(args);
 		return true;
 	}
 
