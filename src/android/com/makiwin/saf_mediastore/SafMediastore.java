@@ -134,30 +134,15 @@ public class SafMediastore extends CordovaPlugin implements ValueCallback<String
 		try {
 			String uri = args.getString(0);
 			Intent intent = new Intent(Intent.ACTION_VIEW);
-			// String[] resourcesUri = this.getRealPathFromURI(Uri.parse(uri));
 			String extension = uri.substring(uri.lastIndexOf('.') + 1);
 			intent.setDataAndType(Uri.parse(uri), MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension));
 			intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			this.callbackContext = callbackContext;
-			// cordova.getActivity().startActivity(Intent.createChooser(intent, "Open File
-			// in..."));
 			cordovaInterface.startActivityForResult(this, Intent.createChooser(intent, "Open File in..."),
 					Action.openFile.ordinal());
 			return true;
 		} catch (Exception e) {
-			callbackContext.error(debugLog(e));
-			return false;
-		}
-	}
-
-	public boolean readFile2(JSONArray args, CallbackContext callbackContext) {
-		try{
-			Uri uri = Uri.parse(args.getString(0));
-			String wholeID = DocumentsContract.getDocumentId(uri);
-			callbackContext.success(wholeID);
-			return true;
-		} catch(Exception e){
 			callbackContext.error(debugLog(e));
 			return false;
 		}
@@ -172,6 +157,28 @@ public class SafMediastore extends CordovaPlugin implements ValueCallback<String
 			FileUtils.copy(inputStream, byteArrayOutputStream);
 			callbackContext.success(byteArrayOutputStream.toByteArray());
 			return true;
+		} catch (Exception e) {
+			callbackContext.error(debugLog(e));
+			return false;
+		}
+	}
+
+	public boolean readAsArrayBuffer(JSONArray args, CallbackContext callbackContext) {
+		try {
+			Uri uri = Uri.parse(args.getString(0));
+			try (
+					InputStream inputStream = cordovaInterface.getContext().getContentResolver()
+							.openInputStream(uri);
+					ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+				FileUtils.copy(inputStream, byteArrayOutputStream);
+
+				callbackContext.success(byteArrayOutputStream.toByteArray());
+				return true;
+			} catch (Exception e) {
+				callbackContext.error(debugLog(e));
+				return false;
+			}
+
 		} catch (Exception e) {
 			callbackContext.error(debugLog(e));
 			return false;
@@ -278,36 +285,6 @@ public class SafMediastore extends CordovaPlugin implements ValueCallback<String
 					outputStream.write(byteArrayOutputStream.toByteArray());
 				}
 				callbackContext.success(uri.toString());
-				return true;
-			} catch (Exception e) {
-				callbackContext.error(debugLog(e));
-				return false;
-			}
-
-		} catch (Exception e) {
-			callbackContext.error(debugLog(e));
-			return false;
-		}
-	}
-
-	public boolean touchFile2(JSONArray args, CallbackContext callbackContext) {
-		try {
-			JSONObject params = args.getJSONObject(0);
-			Uri uri = Uri.parse(params.getString("uri"));
-			try (
-					InputStream inputStream = cordovaInterface.getContext().getContentResolver()
-							.openInputStream(uri);
-					ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
-				FileUtils.copy(inputStream, byteArrayOutputStream);
-
-//				try (OutputStream outputStream = cordovaInterface.getContext().getContentResolver().openOutputStream(uri)) {
-//					outputStream.write(byteArrayOutputStream.toByteArray());
-//				} catch (Exception e2){
-//					callbackContext.error(debugLog(e2));
-//					return false;
-//				}
-
-				callbackContext.success(byteArrayOutputStream.toByteArray());
 				return true;
 			} catch (Exception e) {
 				callbackContext.error(debugLog(e));
