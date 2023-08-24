@@ -526,7 +526,18 @@ public class SafMediastore extends CordovaPlugin implements ValueCallback<String
 			return stackTrace;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return "Erro no debugLog(): " + e.getMessage() + " [ERRO ORIGINAL]: " + throwable.getMessage();
+			return "Erro no debugLog(): " + e.getMessage() + " [ERRO ORIGINAL]: " + throwable.getMessage() + " [STACK TRACE]: " + getStackTrace(throwable);
+		}
+	}
+
+	public String getStackTrace(Throwable throwable) {
+		try{
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			throwable.printStackTrace(pw);
+			return sw.toString();
+		} catch (Exception e){
+			return "Erro no getStackTrace(): " + e.getMessage() + " [ERRO ORIGINAL]: " + throwable.getMessage();
 		}
 	}
 
