@@ -151,9 +151,16 @@ public class SafMediastore extends CordovaPlugin implements ValueCallback<String
 		}
 	}
 
-	public boolean test(JSONArray args, CallbackContext callbackContext) {
-		callbackContext.success(args);
-		return true;
+	public boolean readFile2(JSONArray args, CallbackContext callbackContext) {
+		try{
+			Uri uri = Uri.parse(args.getString(0));
+			String wholeID = DocumentsContract.getDocumentId(uri);
+			callbackContext.success(wholeID);
+			return true;
+		} catch(Exception e){
+			callbackContext.error(debugLog(e));
+			return false;
+		}
 	}
 
 	@RequiresApi(api = Build.VERSION_CODES.Q)
