@@ -521,7 +521,7 @@ public class SafMediastore extends CordovaPlugin implements ValueCallback<String
 			return stackTrace;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return "";
+			return "Erro no debugLog(): " + e.getMessage() + " [ERRO ORIGINAL]: " + throwable.getMessage();
 		}
 	}
 
