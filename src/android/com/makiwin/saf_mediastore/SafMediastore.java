@@ -134,10 +134,9 @@ public class SafMediastore extends CordovaPlugin implements ValueCallback<String
 		try {
 			String uri = args.getString(0);
 			Intent intent = new Intent(Intent.ACTION_VIEW);
-			String[] resourcesUri = this.getRealPathFromURI(Uri.parse(uri));
-			intent.setDataAndType(Uri.parse(uri),
-					MimeTypeMap.getSingleton()
-							.getMimeTypeFromExtension(resourcesUri[0].substring(resourcesUri[0].lastIndexOf('.') + 1)));
+			// String[] resourcesUri = this.getRealPathFromURI(Uri.parse(uri));
+			String extension = uri.substring(uri.lastIndexOf('.') + 1);
+			intent.setDataAndType(Uri.parse(uri), MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension));
 			intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			this.callbackContext = callbackContext;
