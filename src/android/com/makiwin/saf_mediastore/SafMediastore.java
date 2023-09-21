@@ -359,7 +359,7 @@ public class SafMediastore extends CordovaPlugin implements ValueCallback<String
 		}
 	}
 
-	public boolean getFileName(JSONArray args, CallbackContext callbackContext) {
+	public boolean getFileNameOld(JSONArray args, CallbackContext callbackContext) {
 		try (Cursor cursor = cordovaInterface.getContext().getContentResolver().query(Uri.parse(args.getString(0)),
 				null, null, null, null)) {
 			if (cursor != null && cursor.moveToFirst()) {
