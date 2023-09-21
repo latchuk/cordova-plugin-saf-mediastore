@@ -166,12 +166,13 @@ public class SafMediastore extends CordovaPlugin implements ValueCallback<String
 	public boolean readAsArrayBuffer(JSONArray args, CallbackContext callbackContext) {
 		try {
 			Uri uri = Uri.parse(args.getString(0));
+
 			try (
 					InputStream inputStream = cordovaInterface.getContext().getContentResolver()
 							.openInputStream(uri);
-					ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+					ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()
+			) {
 				FileUtils.copy(inputStream, byteArrayOutputStream);
-
 				callbackContext.success(byteArrayOutputStream.toByteArray());
 				return true;
 			} catch (Exception e) {
@@ -179,6 +180,20 @@ public class SafMediastore extends CordovaPlugin implements ValueCallback<String
 				return false;
 			}
 
+		} catch (Exception e) {
+			callbackContext.error(debugLog(e));
+			return false;
+		}
+	}
+
+	public boolean getFileName(JSONArray args, CallbackContext callbackContext) {
+		try {
+			Uri uri = Uri.parse(args.getString(0));
+			Cursor cursor = cordovaInterface.getContext().getContentResolver().query(uri, null, null, null, null);
+			int index = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+			cursor.moveToFirst();
+			callbackContext.success(cursor.getString(index));
+			return true;
 		} catch (Exception e) {
 			callbackContext.error(debugLog(e));
 			return false;
